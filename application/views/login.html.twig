@@ -1,0 +1,43 @@
+{% extends 'layout.html.twig' %}
+{% block header %}{% endblock %}
+{% block wrapper %}
+    <ul class="nav nav-tabs nav-justified" role="tablist">
+        <li class="active"><a href="#formTab" data-toggle="tab" role="tab">Login with Username</a></li>
+        <li><a href="#addressTab" data-toggle="tab" role="tab">Login with Hash</a></li>
+    </ul>
+
+    <div class="tab-content well">
+        <div class="tab-pane active in" id="formTab">
+            <h3>Login</h3>
+            <form method="post" action="{{ data.base_url }}/login" id="loginForm" class="form-horizontal">
+                <div class="form-group" id="usernameGroup">
+                    <label class="control-label">Username</label>
+                    <input type="text" class="form-control" name="username" placeholder="Username" autofocus/>
+                </div>
+                <div class="form-group" id="passwordGroup">
+                    <label class="control-">Password</label>
+                    <input type="password" class="form-control" name="password" placeholder="Password" />
+                </div>
+                <div class="form-group text-right">
+                    <input type="submit" class="btn btn-success" id="loginSubmit" value="Login" />
+                </div>
+            </form>
+
+        </div>
+
+        <div class="tab-pane" id="addressTab">
+
+            <h3>Login with you hash</h3>
+            <form method="post" action="{{ data.base_url }}/login" id="loginForm" class="form-horizontal">
+                <div class="form-group" id="usernameGroup">
+                    <label class="control-label">Hash</label>
+                    <input type="text" class="form-control" name="hash" placeholder="Hash" autofocus/>
+                </div>
+                <div class="form-group text-right">
+                    <input type="submit" class="btn btn-success" id="loginSubmit" value="Login" />
+                </div>
+            </form>
+
+        </div>
+    </div>
+{% endblock %}

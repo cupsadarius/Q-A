@@ -1,0 +1,33 @@
+{% extends 'dashboard.html.twig' %}
+{% block content %}
+    <h2 class="sub-header">Subscriptions</h2>
+    <div class="table-responsive">
+        <table class="table table-striped">
+            <thead>
+            <tr>
+                <th>#</th>
+                <th>Question</th>
+                <th>Description</th>
+                <th></th>
+            </tr>
+            </thead>
+            <tbody>
+            {% if data.subscriptions %}
+                {% for subscription in data.subscriptions %}
+                    <tr>
+                        <td>{{ subscription.id }}</td>
+                        <td>{{ subscription.question.question|raw }}</td>
+                        <td>{{ subscription.question.description|raw }}</td>
+                        <td class="text-right">
+                                        <span class="action">
+                                            <a href="{{ data.base_url }}/subscription/delete/{{ subscription.id }}" data-toggle="tooltip" data-placement="left" title="Unsubscribe from this question" id="subscriptionDelete">
+                                                <span class="glyphicon glyphicon-remove"></span></a>
+                                        </span>
+                        </td>
+                    </tr>
+                {% endfor %}
+            {% endif %}
+            </tbody>
+        </table>
+    </div>
+{% endblock %}

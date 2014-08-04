@@ -1,0 +1,115 @@
+{% extends 'dashboard.html.twig' %}
+{% block content %}
+    {% block alerts %}
+        {% if data.alert %}
+            <div class="alert alert-{{ data.alert.type }} collapse" id="alertMessage">
+                <a class="close" href="" data-dismiss="alert">&times;</a>
+                <p>{{ data.alert.message }}</p>
+            </div>
+        {% endif %}
+    {% endblock %}
+    <h2 class="sub-header">
+        Your profile
+        <span class="right">
+            <a onclick="editUserModal()" data-toggle="tooltip" data-placement="left" title="Edit user profile" id="userEdit">
+                <span class="glyphicon glyphicon-pencil"></span></a>
+            <a href="{{ data.base_url }}/profile/delete/{{ data.user.getId }}" data-toggle="tooltip" data-placement="left" title="Delete user" id="userDelete">
+                <span class="glyphicon glyphicon-remove"></span></a>
+
+        </span>
+    </h2>
+    <div>
+        <div class="row">
+            <div class="col-md-3"><h4>First name:</h4></div>
+            <div class="col-md-9"><h4>{{ data.user.getFirstName }}</h4></div>
+        </div>
+        <div class="row">
+            <div class="col-md-3"><h4>Last name:</h4></div>
+            <div class="col-md-9"><h4>{{ data.user.getLastName }}</h4></div>
+        </div>
+        <div class="row">
+            <div class="col-md-3"><h4>Email:</h4></div>
+            <div class="col-md-9"><h4>{{ data.user.getEmail }}</h4></div>
+        </div>
+        <div class="row">
+            <div class="col-md-3"><h4>Birthday:</h4></div>
+            <div class="col-md-9"><h4>{{ data.user.getBirthdayTwig }}</h4></div>
+        </div>
+        <div class="row">
+            <div class="col-md-3"><h4>Username:</h4></div>
+            <div class="col-md-9"><h4>{{ data.user.getUsername }}</h4></div>
+        </div>
+        <div class="row">
+            <div class="col-md-3"><h4>Password hash:</h4></div>
+            <div class="col-md-9"><h4>{{ data.user.getHash }}</h4></div>
+        </div>
+
+    </div>
+
+{% endblock %}
+{% block modals %}
+    <div class="modal fade" id="editUserDialog" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <a href="" class="close" data-dismiss="modal">&times;</a>
+                    <h4>Edit user profile</h4>
+                </div>
+                <div class="modal-body">
+                    <form id="editUserForm" method="post" class="form-horizontal" action="{{ data.base_url }}/profile/edit">
+                        <div class="form-group">
+                            <label class="col-lg-3 control-label">First Name</label>
+                            <div class="col-lg-9">
+                                <input type="text" class="form-control" name="firstName" value="{{ data.user.getFirstName }}"/>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-lg-3 control-label">Last Name</label>
+                            <div class="col-lg-9">
+                                <input type="text" class="form-control" name="lastName" value="{{ data.user.getLastName }}"/>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-lg-3 control-label">Email address</label>
+                            <div class="col-lg-9">
+                                <input type="text" class="form-control" name="email" value="{{ data.user.getEmail }}"/>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-lg-3 control-label">Username</label>
+                            <div class="col-lg-9">
+                                <input type="text" class="form-control" name="username" value="{{ data.user.getUsername }}"/>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-lg-3 control-label">Current password</label>
+                            <div class="col-lg-9">
+                                <input type="password" class="form-control" name="current_password" />
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-lg-3 control-label">New password</label>
+                            <div class="col-lg-9">
+                                <input type="password" class="form-control" name="password" />
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-lg-3 control-label">Date of birth</label>
+                            <div class="col-lg-9">
+                                <input type="text" class="form-control" name="birthday"
+                                       placeholder="YYYY/MM/DD" value="{{ data.user.getBirthdayTwig }}"/>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="col-lg-9 col-lg-offset-3">
+                                <input type="hidden" name="user_id" value="{{ data.user.getId }}" />
+                                <button type="submit" class="btn btn-success">Modifiy</button>
+                            </div>
+                        </div>
+                    </form>
+
+                </div>
+        </div>
+    </div>
+{% endblock %}

@@ -1,0 +1,14 @@
+body{
+    margin-top: 70px;
+}
+.right{
+    float: right;
+}
+.rating a{
+    cursor: pointer;
+}
+.logo{
+    margin-top: -10px;
+    width: 40px;
+    height: 40px;
+}

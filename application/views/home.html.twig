@@ -1,0 +1,56 @@
+{% extends 'layout.html.twig' %}
+
+{% block wrapper %}
+    <div class="col-md-3">
+        {% block sidebar %}
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title">Sections</h3>
+                </div>
+                <div class="panel-body">
+                    <div class="list-group">
+                        {% for section in data.sections %}
+                            <a href="{{ data.base_url }}/section/{{ section.tag }}/0" class="list-group-item {% if data.section == section.tag %}active{% endif %}">{{ section.name }}</a>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        {% endblock %}
+    </div>
+    <div class="col-md-9">
+        {% block content %}
+            {% if( data.questions) %}
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">Latest questions</h3>
+                    </div>
+                    <div class="panel-body">
+                        {% for question in data.questions %}
+                            <div class="panel panel-primary">
+                                <div class="panel-heading">
+                                    <h3 class="panel-title">{{ question.question|raw }}</h3>
+                                </div>
+                                <div class="panel-body">
+                                    <p>{{ question.description|raw }}</p>
+                                </div>
+                                <div class="panel-footer text-right">
+                                    <a class="btn btn-default" href="{{ data.base_url }}/question/view/{{ question.id }}">Read answers</a>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            {% else %}
+                <div class="panel panel-danger">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">Error</h3>
+                    </div>
+                    <div class="panel-body">
+                        <p class="lead">We do not have any questions in this section!</p>
+                        <p>You can add it if you want!</p>
+                    </div>
+                </div>
+            {% endif %}
+        {% endblock %}
+    </div>
+{% endblock %}

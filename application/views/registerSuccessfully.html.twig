@@ -1,0 +1,9 @@
+{% extends 'layout.html.twig' %}
+{% block header %}
+    <div class="jumbotron text-center">
+        <h1>Welcome</h1>
+        <p class="lead">{{ data.user }}, we welcome you to our family!</p>
+        <p><a class="btn btn-success" href="{{ data.base_url }}/dashboard/overview">Start your experience with us now</a></p>
+    </div>
+{% endblock %}
+{% block wrapper %}{% endblock %}

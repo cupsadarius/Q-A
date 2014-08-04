@@ -1,0 +1,74 @@
+{% extends 'section.html.twig' %}
+{% block content %}
+    {% block alert %}
+        {% if data.alert %}
+            <div class="alert alert-{{ data.alert.type }} collapse" id="alertMessage">
+                <a class="close" href="" data-dismiss="alert">&times;</a>
+                <p>{{ data.alert.message }}</p>
+            </div>
+        {% endif %}
+    {% endblock %}
+    {% if( data.question) %}
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title">{{ data.question.question|raw }}<a href="{{ data.base_url }}/subscription/add/{{ data.question.id }}" class="right" data-toggle="tooltip" data-placement="left" title="Subscribe" id="subscriptionAdd"><span class="glyphicon glyphicon-plus-sign"></span> </a> </h3>
+            </div>
+            <div class="panel-body">
+                <p>{{ data.question.description|raw }}</p>
+                <hr />
+                {% if data.answers %}
+                    {% for answer in data.answers %}
+                        <div class="panel panel-default">
+                            <div class="panel-heading">
+                                <h3 class="panel-title">{{ answer.title|raw }}</h3>
+                            </div>
+                            <div class="panel-body">
+                                <p>{{ answer.answer|raw }}</p>
+                            </div>
+                            <div class="panel-footer">
+                                <p>Posted by {{ answer.user }} on {{ answer.getDateTwig }} <span class="right rating"><a onclick="rateUp({{ answer.id }})"><span class="glyphicon glyphicon-hand-up" id="up">{{ answer.ratingUp }}</span></a>&nbsp;&nbsp;<a onclick="rateDown({{ answer.id }})"><span class="glyphicon glyphicon-hand-down" id="down">{{ answer.ratingDown }}</span></a></span> </p>
+
+                            </div>
+                        </div>
+                    {% endfor %}
+                {% else %}
+                    <p>We do not have an answer for this question yet.</p>
+                {% endif %}
+                {% if data.user %}
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <h3 class="panel-title">Post your answer</h3>
+                        </div>
+                        <div class="panel-body">
+                            <form method="post" action="{{ data.base_url }}/answer/add" id="loginForm" class="form-horizontal">
+                                <div class="form-group" id="usernameGroup">
+                                    <label class="control-label">Title</label>
+                                    <input type="text" class="form-control" name="title" placeholder="Title" autofocus/>
+                                </div>
+                                <div class="form-group" id="passwordGroup">
+                                    <label class="control-">Answer</label>
+                                    <textarea name="answer" class="form-control"></textarea>
+                                </div>
+                                <div class="form-group text-right">
+                                    <input type="hidden" name="question_id" value="{{ data.question.getId() }}">
+                                    <input type="submit" class="btn btn-success" id="answerSubmit" value="Submit your answer" />
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    {% else %}
+        <div class="panel panel-danger">
+            <div class="panel-heading">
+                <h3 class="panel-title">Error</h3>
+            </div>
+            <div class="panel-body">
+                <p class="lead">This question does not exist...</p>
+                <p>You can add it if you want!</p>
+            </div>
+        </div>
+    {% endif %}
+
+{% endblock %}

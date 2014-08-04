@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <title>Dashboard for Q&A project</title>
+    <!-- Bootstrap core CSS -->
+    <link href="{{ data.base_url }}/css/bootstrap.min.css" rel="stylesheet">
+    <link href="{{ data.base_url }}/css/bootstrap-theme.min.css" rel="stylesheet">
+    <link href="{{ data.base_url }}/css/dashboard.css" rel="stylesheet">
+    <link rel="shortcut icon" href="{{ data.base_url }}/favicon.ico" type="image/ico" />
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+    <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+    <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+</head>
+
+<body>
+
+<div class="navbar navbar-default navbar-fixed-top" role="navigation">
+    <div class="container-fluid">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="{{ data.base_url }}"><img src="{{ data.base_url }}/images/logo.png" class="logo"></a>
+        </div>
+        <div class="navbar-collapse collapse">
+            <ul class="nav navbar-nav navbar-right">
+                <li><a href="{{ data.base_url }}">Home</a> </li>
+                <li {% if data.page == 'dashboard' %}class="active"{% endif %}><a href="{{ data.base_url }}/dashboard/overview">Dashboard</a>
+                </li>
+                <li {% if data.page == 'profile' %}class="active"{% endif %}><a href="{{ data.base_url }}/profile">Profile</a>
+                </li>
+                <li><a href="{{ data.base_url }}/logout">Logout</a> </li>
+            </ul>
+            <form action="{{ data.base_url }}/search" class="navbar-form navbar-right" id="searchForm" method="post">
+                <input type="text" class="form-control" id="search" name="search" style="margin-right: 5px"
+                       placeholder="Search..." onchange="search()">
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-sm-3 col-md-2 sidebar text-center">
+            <h3>Welcome back</h3>
+
+            <p class="lead">{{ data.user }}</p>
+            <ul class="nav nav-sidebar">
+                <li{% if data.action == 'overview' %} class="active"{% endif %}><a
+                            href="{{ data.base_url }}/dashboard/overview">Overview</a></li>
+                <li{% if data.action == 'subscription' %} class="active"{% endif %}><a
+                            href="{{ data.base_url }}/dashboard/subscription">Manage subscription</a></li>
+            </ul>
+        </div>
+        <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+            {% block content %}
+                {% block alerts %}
+
+                {% endblock %}
+                <h2 class="sub-header">Your questions<span class="right"><a onclick="addQuestionModal()" data-toggle="tooltip" data-placement="left" title="Add a new Question" id="questionAdd"><span class="glyphicon glyphicon-plus"></span></a></span></h2>
+                <div class="table-responsive">
+                    <table class="table table-striped">
+                        <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Question</th>
+                            <th>Description</th>
+                            <th></th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% if data.questions %}
+                            {% for question in data.questions %}
+                                <tr>
+                                    <td>{{ question.id }}</td>
+                                    <td>{{ question.question|raw }}</td>
+                                    <td>{{ question.description|raw }}</td>
+                                    <td class="text-right">
+                                        <span class="action">
+                                            <a onclick="editQuestionModal({{ question.id }})" data-toggle="tooltip" data-placement="left" title="Edit this question" id="questionEdit">
+                                                <span class="glyphicon glyphicon-pencil"></span></a>
+                                            <a href="{{ data.base_url }}/question/delete/{{ question.id }}" data-toggle="tooltip" data-placement="left" title="Delete this question" id="questionDelete">
+                                                <span class="glyphicon glyphicon-remove"></span></a>
+                                        </span>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        {% endif %}
+                        </tbody>
+                    </table>
+                </div>
+
+                <h2 class="sub-header">Your answers</h2>
+                <div class="table-responsive">
+                    <table class="table table-striped">
+                        <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Question</th>
+                            <th>Title</th>
+                            <th>Answer</th>
+                            <th>Rating</th>
+                            <th></th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% if data.answers %}
+                            {% for answer in data.answers %}
+                                <tr>
+                                    <td>{{ answer.id }}</td>
+                                    <td>{{ answer.question.question }}</td>
+                                    <td>{{ answer.title|raw }}</td>
+                                    <td>{{ answer.answer|raw }}</td>
+                                    <td class="text-center action">
+                                            <span class="glyphicon glyphicon-hand-up">{{ answer.ratingUp }}</span>
+                                           <span class="glyphicon glyphicon-hand-down">{{ answer.ratingDown }}</span>
+
+                                    </td>
+                                   <td class="text-right">
+                                        <span class="action">
+                                            <a onclick="editAnswerModal({{ answer.id }})" data-toggle="tooltip" data-placement="left" title="Edit this answer" id="answerEdit">
+                                                <span class="glyphicon glyphicon-pencil"></span></a>
+                                            <a href="{{ data.base_url }}/answer/delete/{{ answer.id }}" data-toggle="tooltip" data-placement="left" title="Delete this answer" id="answerDelete">
+                                                <span class="glyphicon glyphicon-remove"></span></a>
+                                        </span>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        {% endif %}
+                        </tbody>
+                    </table>
+                </div>
+            {% endblock %}
+        </div>
+
+    </div>
+</div>
+{% block modals %}
+    <div class="modal fade" id="addQuestionDialog" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <a href="" class="close" data-dismiss="modal">&times;</a>
+                    <h4>Add a question</h4>
+                </div>
+                <div class="modal-body">
+                    <form id="addQuestionForm" method="post" class="form-horizontal" action="{{ data.base_url }}/question/add">
+                        <div class="form-group">
+                            <label class="col-lg-3 control-label">Question</label>
+                            <div class="col-lg-9">
+                                <input type="text" class="form-control" name="question" />
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-lg-3 control-label">Sections</label>
+                            <div class="col-lg-9">
+                                <select class="form-control" name="section">
+                                    {% for section in data.sections %}
+                                        <option value="0">Another</option>
+                                        <option value="{{ section.id }}">{{ section.name }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+                            <div class="form-group">
+                                <label class="col-lg-3 control-label">New Section</label>
+                                <div class="col-lg-9">
+                                    <input type="text" class="form-control" name="section_new"></textarea>
+                                </div>
+                            </div>
+
+                        <div class="form-group">
+                            <label class="col-lg-3 control-label">Description</label>
+                            <div class="col-lg-9">
+                                <textarea class="form-control" name="description"></textarea>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-lg-9 col-lg-offset-3">
+                                <button type="submit" class="btn btn-success">Add question</button>
+                            </div>
+                        </div>
+                    </form>
+
+                </div>
+            </div>
+        </div>
+ </div>
+    <div class="modal fade" id="editQuestionDialog" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <a href="" class="close" data-dismiss="modal">&times;</a>
+                    <h4>Edit a question</h4>
+                </div>
+                <div class="modal-body">
+                    <form id="editQuestionForm" method="post" class="form-horizontal" action="{{ data.base_url }}/question/edit">
+                        <div class="form-group">
+                            <label class="col-lg-3 control-label">Question</label>
+                            <div class="col-lg-9">
+                                <input type="text" class="form-control" id="question" name="question" />
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-lg-3 control-label">Sections</label>
+                            <div class="col-lg-9">
+                                <select class="form-control" id="section" name="section">
+                                    {% for section in data.sections %}
+                                        <option value="{{ section.id }}">{{ section.name }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-lg-3 control-label">Description</label>
+                            <div class="col-lg-9">
+                                <textarea class="form-control" id="description" name="description"></textarea>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-lg-9 col-lg-offset-3">
+                                <input type="hidden" id="question_id" name="question_id" value=""/>
+                                <button type="submit" class="btn btn-success">Edit question</button>
+                            </div>
+                        </div>
+                    </form>
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="editAnswerDialog" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <a href="" class="close" data-dismiss="modal">&times;</a>
+                    <h4>Edit your answer</h4>
+                </div>
+                <div class="modal-body">
+                    <form id="editAnswerForm" method="post" class="form-horizontal" action="{{ data.base_url }}/answer/edit">
+                        <div class="form-group">
+                            <label class="col-lg-3 control-label">Title</label>
+                            <div class="col-lg-9">
+                                <input type="text" class="form-control" id="title" name="title" />
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-lg-3 control-label">Answer</label>
+                            <div class="col-lg-9">
+                                <textarea class="form-control" id="answer" name="answer"></textarea>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-lg-9 col-lg-offset-3">
+                                <input type="hidden" id="answer_id" name="answer_id" value="" />
+                                <button type="submit" class="btn btn-success">Edit answer</button>
+                            </div>
+                        </div>
+                    </form>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
+<script src="{{ data.base_url }}/js/jquery.min.js"></script>
+<script src="{{ data.base_url }}/js/bootstrap.min.js"></script>
+<script src="{{ data.base_url }}/js/bootstrapValidator.min.js"></script>
+<script src="{{ data.base_url }}/js/site.js"></script>
+</body>
+</html>

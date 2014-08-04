@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Q&A Project{% endblock %}</title>
+    <link rel="stylesheet" type="text/css" href="{{ data.base_url }}/css/bootstrap.min.css" />
+    <link rel="stylesheet" type="text/css" href="{{ data.base_url }}/css/bootstrap-theme.min.css" />
+    <link rel="stylesheet" type="text/css" href="{{ data.base_url }}/css/site.css" />
+    <link rel="shortcut icon" href="{{ data.base_url }}/favicon.ico" type="image/ico" />
+</head>
+<body>
+<header class="container">
+    {% block nav %}
+    <div class="navbar navbar-fixed-top navbar-default" role="navigation">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="{{ data.base_url }}"><img src="{{ data.base_url }}/images/logo.png" class="logo"></a>
+    </div>
+        <div class="collapse navbar-collapse navbar-right">
+            <ul class="nav navbar-nav">
+                <li{% if data.page == 'home' %} class="active"{% endif %}><a href="{{ data.base_url }}">Home</a></li>
+                {% if data.user %}
+                <li><a href="{{ data.base_url }}/dashboard/overview">Dashboard</a> </li>
+                <li><a href="{{ data.base_url }}/logout">Logout</a> </li>
+                {% else %}
+                    <li><a onclick="loginModal()">LogIn</a></li>
+                {% endif %}
+
+            </ul>
+            <form action="{{ data.base_url }}/search" class="navbar-form navbar-right" id="searchForm" method="post">
+                <input type="text" class="form-control" id="search" name="search" style="margin-right: 5px" placeholder="Search..." onchange="search()">
+            </form>
+        </div>
+
+    </div>
+    {% endblock %}
+</header>
+<section class="container">
+    {% block header %}
+        {% if data.user %}
+            <div class="jumbotron text-center">
+                <h1>Welcome back</h1>
+                <p class="lead">{{ data.user }}</p>
+            </div>
+        {% else %}
+            <div class="jumbotron text-center">
+                <h1>Welcome to my Q&A</h1>
+                <p class="lead">You're welcome to post and answer questions here!</p>
+                <p><a class="btn btn-success" onclick="loginModal()">Start now</a></p>
+            </div>
+        {% endif %}
+    {% endblock %}
+    <div class="row">
+        {% block wrapper %}
+        <div class="col-md-3">
+            {% block sidebar %}
+
+            {% endblock %}
+        </div>
+        <div class="col-md-9">
+            {% block content %}
+
+            {% endblock %}
+        </div>
+        {% endblock %}
+    </div>
+</section>
+<footer class="container well">
+{% block footer %}<p class="col-md-4 col-md-offset-8">Designed by Cupsa Darius | Powered by Flake</p>{% endblock %}
+</footer>
+<!-- Modals for login / register -->
+<div class="modal fade" id="loginDialog" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <a href="" class="close" data-dismiss="modal">&times;</a>
+                <h4>Login</h4>
+            </div>
+            <div class="modal-body">
+                <ul class="nav nav-tabs nav-justified" role="tablist">
+                    <li class="active"><a href="#formTab" data-toggle="tab" role="tab">Login with Username</a></li>
+                    <li><a href="#addressTab" data-toggle="tab" role="tab">Login with Hash</a></li>
+                </ul>
+
+                <div class="tab-content well">
+                    <div class="tab-pane active in" id="formTab">
+                        <h3>Login</h3>
+                        <form method="post" action="{{ data.base_url }}/login" id="loginForm" class="form-horizontal">
+                            <div class="form-group" id="usernameGroup">
+                                <label class="control-label">Username</label>
+                                <input type="text" class="form-control" name="username" placeholder="Username" autofocus/>
+                            </div>
+                            <div class="form-group" id="passwordGroup">
+                                <label class="control-">Password</label>
+                                <input type="password" class="form-control" name="password" placeholder="Password" />
+                            </div>
+                            <div class="form-group text-right">
+                                <input type="submit" class="btn btn-success" id="loginSubmit" value="Login" />
+                                <button class="btn btn-success" onclick="registerModal()">Register</button>
+                            </div>
+                        </form>
+
+                    </div>
+
+                    <div class="tab-pane" id="addressTab">
+
+                        <h3>Login with your hash</h3>
+                        <form method="post" action="{{ data.base_url }}/login" id="loginForm" class="form-horizontal">
+                            <div class="form-group" id="usernameGroup">
+                                <label class="control-label">Hash</label>
+                                <input type="text" class="form-control" name="hash" placeholder="Hash" autofocus/>
+                            </div>
+                            <div class="form-group text-right">
+                                <input type="submit" class="btn btn-success" id="loginSubmit" value="Login" />
+                                <button class="btn btn-success" onclick="registerModal()">Register</button>
+                            </div>
+                        </form>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="registerDialog" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <a href="" class="close" data-dismiss="modal">&times;</a>
+                <h4>Register</h4>
+            </div>
+            <div class="modal-body">
+                <form id="registerForm" method="post" class="form-horizontal" action="/register">
+                    <div class="form-group">
+                        <label class="col-lg-3 control-label">First Name</label>
+                        <div class="col-lg-9">
+                            <input type="text" class="form-control" name="firstName" />
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-lg-3 control-label">Last Name</label>
+                        <div class="col-lg-9">
+                            <input type="text" class="form-control" name="lastName" />
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-lg-3 control-label">Email address</label>
+                        <div class="col-lg-9">
+                            <input type="text" class="form-control" name="email" />
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-lg-3 control-label">Username</label>
+                        <div class="col-lg-9">
+                            <input type="text" class="form-control" name="username" />
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-lg-3 control-label">Password</label>
+                        <div class="col-lg-9">
+                            <input type="password" class="form-control" name="password" />
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-lg-3 control-label">Date of birth</label>
+                        <div class="col-lg-9">
+                            <input type="text" class="form-control" name="birthday"
+                                   placeholder="YYYY/MM/DD" />
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="col-lg-9 col-lg-offset-3">
+                            <button type="submit" class="btn btn-success">Sign up</button>
+                        </div>
+                    </div>
+                </form>
+
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Jquery scripts -->
+<script type="text/javascript" src="{{ data.base_url }}/js/jquery.min.js"></script>
+<script type="text/javascript" src="{{ data.base_url }}/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="{{ data.base_url }}/js/bootstrapValidator.min.js"></script>
+<script type="text/javascript" src="{{ data.base_url }}/js/site.js"></script>
+</body>
+</html>
