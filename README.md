@@ -34,3 +34,4 @@ Design patterns used:<br />
 4. Abstract Factory(the Registry)<br />
 5. Factory(ControllerFactory and ModelFactory)<br />
 6. Strategy (Based on the login method chosed calls different methods)<br />
+7. Adapter {DbAdapter can be used with different Db types}
