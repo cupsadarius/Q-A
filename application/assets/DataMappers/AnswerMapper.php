@@ -9,8 +9,8 @@
 namespace application\assets\DataMappers;
 
 
+use application\assets\Db\DbAdapter;
 use application\assets\Entities\Answer;
-use application\assets\Db\DbConnection;
 use application\assets\Observers\AnswerObserver;
 
 class AnswerMapper {
@@ -19,7 +19,7 @@ class AnswerMapper {
     private $table = '`answers`';
     private $observer;
 
-    public function __construct(DbConnection $db){
+    public function __construct(DbAdapter $db){
         $this->_db = $db->getDbCon();
         $this->attachObserver(new AnswerObserver());
     }
@@ -33,8 +33,8 @@ class AnswerMapper {
     public function convert($data){
         if(empty($data)) return null;
         $answer = new Answer();
-        $userMapper = new UserMapper(DbConnection::getInstance());
-        $questionMapper = new QuestionMapper(DbConnection::getInstance());
+        $userMapper = new UserMapper(DbAdapter::getInstance());
+        $questionMapper = new QuestionMapper(DbAdapter::getInstance());
         if(count($data)==1){
             $answer->setId($data[0]['id']);
             $answer->setUser($userMapper->find(array('id'=>$data[0]['user_id'])));
@@ -101,7 +101,7 @@ class AnswerMapper {
         if(!empty($id)){
             $sql = "UPDATE $this->table SET user_id=:user_id,question_id=:question_id,title=:title,answer=:answer,rating=:rating,modified_date=:modified_date WHERE  id=:id";
             $cols = array(':id',':user_id',':question_id',':title',':answer',':rating',':modified_date');
-            $vals = array($obj->getId(),$obj->getUser()->getId(),$obj->getQuestion()->getId(),$obj->getTitle(),$obj->getAnswer(),$obj->getRating(),$obj->getModifiedDate()->format('Y/m/d'));
+            $vals = array($obj->getId(),$obj->getUser()->getId(),$obj->getQuestion()->getId(),$obj->getTitle(),$obj->getAnswer(),$obj->getRating(),$obj->getModifiedDate()->format('Y/m/d G:i:s'));
             $this->_db->beginTransaction();
             try{
                 $query = $this->prepareStatement($sql,$cols,$vals);
@@ -116,12 +116,13 @@ class AnswerMapper {
         }
         $sql = "INSERT INTO $this->table (`user_id`,`question_id`,`title`,`answer`,`rating`,`modified_date`) VALUES (:user_id, :question_id, :title, :answer, :rating, :modified_date)";
         $cols = array(':user_id',':question_id',':title',':answer',':rating',':modified_date');
-        $vals = array($obj->getUser()->getId(),$obj->getQuestion()->getId(),$obj->getTitle(),$obj->getAnswer(),$obj->getRating(),$obj->getModifiedDate()->format('Y/m/d'));
+        $vals = array($obj->getUser()->getId(),$obj->getQuestion()->getId(),$obj->getTitle(),$obj->getAnswer(),$obj->getRating(),$obj->getModifiedDate()->format('Y/m/d G:i:s'));
         $this->_db->beginTransaction();
         try{
             $query = $this->prepareStatement($sql,$cols,$vals);
             $query->execute();
             $this->_db->commit();
+            $this->notify($obj->getQuestion());
         }catch (\PDOException $e){
             $this->_db->rollBack();
             echo "Exception caught: ".$e->getMessage();

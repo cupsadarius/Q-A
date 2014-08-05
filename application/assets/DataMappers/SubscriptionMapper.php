@@ -7,22 +7,22 @@
  */
 
 namespace application\assets\DataMappers;
-use application\assets\Db\DbConnection;
+use application\assets\Db\DbAdapter;
 use application\assets\Entities\Subscription;
 class SubscriptionMapper {
 
     private $_db;
     private $table = '`subscription`';
 
-    public function __construct(DbConnection $db){
+    public function __construct(DbAdapter $db){
         $this->_db = $db->getDbCon();
     }
 
     public function convert($data){
         if(empty($data)) return null;
         $subscription = new Subscription();
-        $userMapper = new UserMapper(DbConnection::getInstance());
-        $questionMapper = new QuestionMapper(DbConnection::getInstance());
+        $userMapper = new UserMapper(DbAdapter::getInstance());
+        $questionMapper = new QuestionMapper(DbAdapter::getInstance());
         if(count($data) == 1){
             $subscription->setId($data[0]['id']);
             $subscription->setUser($userMapper->find(array('id'=>$data[0]['user_id'])));

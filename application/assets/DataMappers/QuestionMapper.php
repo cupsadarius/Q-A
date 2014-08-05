@@ -7,7 +7,7 @@
  */
 
 namespace application\assets\DataMappers;
-use application\assets\Db\DbConnection;
+use application\assets\Db\DbAdapter;
 use application\assets\Entities\Question;
 use application\assets\Observers\QuestionObserver;
 
@@ -16,7 +16,7 @@ class QuestionMapper {
     private $table = '`questions`';
     private $observer;
 
-    public function __construct(DbConnection $db){
+    public function __construct(DbAdapter $db){
         $this->_db = $db->getDbCon();
         $this->attachObserver(new QuestionObserver());
     }
@@ -29,8 +29,8 @@ class QuestionMapper {
     public function convert($data){
         if(empty($data)) return null;
         $question = new Question();
-        $userMapper = new UserMapper(DbConnection::getInstance());
-        $sectionMapper = new SectionMapper(DbConnection::getInstance());
+        $userMapper = new UserMapper(DbAdapter::getInstance());
+        $sectionMapper = new SectionMapper(DbAdapter::getInstance());
         if(count($data)==1){
             $question->setId($data[0]['id']);
             $question->setUser($userMapper->find(array('id'=>$data[0]['user_id'])));
@@ -96,7 +96,7 @@ class QuestionMapper {
         if(!empty($id)){
             $sql = "UPDATE $this->table SET user_id=:user_id,section_id=:section_id,question=:question,description=:description,modified_date=:modified_date WHERE  id=:id";
             $cols = array(':id',':user_id',':section_id',':question',':description',':modified_date');
-            $vals = array($obj->getId(),$obj->getUser()->getId(),$obj->getSection()->getId(),$obj->getQuestion(),$obj->getDescription(),$obj->getModifiedDate()->format('Y/m/d'));
+            $vals = array($obj->getId(),$obj->getUser()->getId(),$obj->getSection()->getId(),$obj->getQuestion(),$obj->getDescription(),$obj->getModifiedDate()->format('Y/m/d G:i:s'));
             $this->_db->beginTransaction();
             try{
                 $query = $this->prepareStatement($sql,$cols,$vals);
@@ -111,7 +111,7 @@ class QuestionMapper {
         }
         $sql = "INSERT INTO $this->table (`user_id`,`section_id`,`question`,`description`,`modified_date`) VALUES (:user_id, :section_id, :question, :description, :modified_date)";
         $cols = array(':user_id',':section_id',':question',':description',':modified_date');
-        $vals = array($obj->getUser()->getId(),$obj->getSection()->getId(),$obj->getQuestion(),$obj->getDescription(),$obj->getModifiedDate()->format('Y/m/d'));
+        $vals = array($obj->getUser()->getId(),$obj->getSection()->getId(),$obj->getQuestion(),$obj->getDescription(),$obj->getModifiedDate()->format('Y/m/d G:i:s'));
         $this->_db->beginTransaction();
         try{
             $query = $this->prepareStatement($sql,$cols,$vals);

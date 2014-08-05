@@ -41,10 +41,6 @@
                 </li>
                 <li><a href="{{ data.base_url }}/logout">Logout</a> </li>
             </ul>
-            <form action="{{ data.base_url }}/search" class="navbar-form navbar-right" id="searchForm" method="post">
-                <input type="text" class="form-control" id="search" name="search" style="margin-right: 5px"
-                       placeholder="Search..." onchange="search()">
-            </form>
         </div>
     </div>
 </div>
@@ -165,8 +161,8 @@
                             <label class="col-lg-3 control-label">Sections</label>
                             <div class="col-lg-9">
                                 <select class="form-control" name="section">
+                                    <option value="0">Another</option>
                                     {% for section in data.sections %}
-                                        <option value="0">Another</option>
                                         <option value="{{ section.id }}">{{ section.name }}</option>
                                     {% endfor %}
                                 </select>

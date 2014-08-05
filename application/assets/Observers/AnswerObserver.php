@@ -35,13 +35,11 @@ class AnswerObserver implements Observer{
                 $subcribers[0] = $tmp;
             }
             foreach($subcribers as $subscriber){
-                var_dump($obj);
                 $user = $subscriber->getUser();
                 $this->_mail->setFrom('webmaster@QandA.com');
                 $this->_mail->setTo($user->getEmail());
                 $this->_mail->setSubject("Added a response to: ".$obj->getQuestion());
                 $this->_mail->setMessage("<html><body><table border='0'><tr><td>Title:</td><td>".$obj->getQuestion()."</td></tr><tr><td>Description:</td><td>".$obj->getDescription()."</td></tr></table> </body></html>");
-                var_dump($this->_mail);
                 $this->_mail->mail();
             }
         }

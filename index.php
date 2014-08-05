@@ -1,7 +1,8 @@
 <?php
 
 use application\assets\Registry;
-use application\assets\Db\DbConnection as DB;
+use application\assets\Db\DbAdapter as DB;
+use application\assets\Db\MysqlDb;
 use application\assets\Routes\RouteManager;
 use application\assets\Routes\Route;
 use application\controllers\ControllerFactory;
@@ -38,7 +39,7 @@ $twig = new Twig_Environment($loader);
 $app->register('twig',$twig);
 $app->register('controllerFactory',new ControllerFactory());
 $app->register('modelFactory', new ModelFactory($app));
-$app->register('em',new EntityManager(DB::getInstance()));
+$app->register('em',new EntityManager(DB::getInstance(new MysqlDb())));
 $app->register('auth', new Auth($app));
 //controllers
 $home = $app->controllerFactory->buildHomeController();

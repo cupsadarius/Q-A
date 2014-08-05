@@ -65,7 +65,10 @@ class MailService {
         $headers = "From: $this->_from\r\n";
         $headers .= "Content-type: text/html\r\n";
         $this->setHeaders($headers);
-        mail($this->_to,$this->_subject,$this->_message,$this->_headers);
+        if(mail($this->_to,$this->_subject,$this->_message,$this->_headers)){
+            return true;
+        }
+        return false;
     }
 
 } 

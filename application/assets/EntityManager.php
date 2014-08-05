@@ -2,6 +2,7 @@
 
 
 namespace application\assets;
+use application\assets\Db\DbAdapter;
 use application\assets\Entities\User;
 use application\assets\DataMappers\UserMapper;
 use application\assets\Entities\Question;
@@ -12,11 +13,10 @@ use application\assets\Entities\Answer;
 use application\assets\DataMappers\AnswerMapper;
 use application\assets\Entities\Subscription;
 use application\assets\DataMappers\SubscriptionMapper;
-use application\assets\Db\DbConnection;
 class EntityManager {
 
     private $_db;
-    public function __construct(DbConnection $db){
+    public function __construct(DbAdapter $db){
         $this->_db = $db;
     }
 

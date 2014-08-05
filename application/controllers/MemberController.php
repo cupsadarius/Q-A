@@ -32,18 +32,14 @@ class MemberController
         if ($is_logged) {
             $app->redirect(200, $app->base_url . '/profile');
         } else {
-            $data['page'] = '';
-            $data['base_url'] = $app->base_url;
-            echo $app->twig->render('login.html.twig', array('data' => $data));
+            $app->redirect(200,$app->base_url);
         }
     }
 
     public function logoutAction(Registry $app, Request $request = null)
     {
         if ($app->auth->logout()) {
-            $data['page'] = '';
-            $data['base_url'] = $app->base_url;
-            echo $app->twig->render('login.html.twig', array('data' => $data));
+            $app->redirect(200,$app->base_url);
         }
     }
 
@@ -213,7 +209,7 @@ class MemberController
             $question->setSection($sectionMapper->find(array('tag'=>$section->getTag())));
         }else {
             $section = $sectionMapper->find(array('id'=>$request->section));
-            $question->setSection($section[0]);
+            $question->setSection($section);
         }
         $question->setQuestion($request->question);
         $question->setDescription($request->description);

@@ -3,7 +3,7 @@
 
 namespace application\assets\DataMappers;
 
-use application\assets\Db\DbConnection;
+use application\assets\Db\DbAdapter;
 use application\assets\Entities\Section;
 
 class SectionMapper {
@@ -11,7 +11,7 @@ class SectionMapper {
     private $_db;
     private $table = '`sections`';
 
-    public function __construct(DbConnection $db){
+    public function __construct(DbAdapter $db){
         $this->_db = $db->getDbCon();
     }
 

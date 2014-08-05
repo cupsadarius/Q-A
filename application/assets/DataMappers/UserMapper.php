@@ -7,7 +7,7 @@
  */
 
 namespace application\assets\DataMappers;
-use application\assets\Db\DbConnection;
+use application\assets\Db\DbAdapter;
 use application\assets\Entities\User;
 
 class UserMapper {
@@ -15,7 +15,7 @@ class UserMapper {
     private $_db;
     private $table = '`users`';
 
-    public function __construct(DbConnection $db){
+    public function __construct(DbAdapter $db){
         $this->_db = $db->getDbCon();
     }
 
